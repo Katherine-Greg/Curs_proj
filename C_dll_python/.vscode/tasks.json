@@ -1,0 +1,45 @@
+{
+	"version": "2.0.0",	
+	"tasks": [		
+		// =======C_DLL===========
+		{
+			"type": "cppbuild",
+			"label": "Create temp folders for project C_DLL",
+			"command": ".\\scripts\\CreateSubFolders.ps1",
+			"options": {
+				"cwd": "${workspaceFolder}",
+				"shell": "PowerShell"
+			},
+			"args": ["-Path", "${config:projects.c_dll.projectDir}", 
+				"-SubFolder", "bin,obj"],
+			"group": "build",
+			"detail": "prepare temp dolfers for project C_DLL"
+		},
+		{
+			"type": "cppbuild",
+			"label": "build c_dll.dll",
+			"command": "gcc.exe",
+			"args": [ "-x", "c", "-shared", "-Wall", "-g", "${workspaceFolder}\\${config:projects.c_dll.projectDir}*.c", 
+				"-o", "${workspaceFolder}\\${config:projects.c_dll.outputDir}c_dll.dll"],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": ["$gcc"],
+			"group": "build",
+			"detail": "compiler: \"gcc.exe\"",
+			"dependsOn":["Create temp folders for project C_DLL"]
+		},
+		{
+			"type": "cppbuild",
+			"label": "build and run main.exe",
+			"command": ".\\main.exe",
+			"options": {
+				"cwd": "${workspaceFolder}\\${config:projects.main.outputDir}"
+			},
+			"args": [],
+			"group": "build",
+			"detail": "build main.exe and run it",
+			"dependsOn": ["build main.exe", "build c_dll.dll"]
+		}
+	]
+}
